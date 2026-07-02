@@ -21,7 +21,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
     DEFAULT_MODEL,
-    PROJECT_NAME,
+    
 )
 from .coordinator import Fritz5GCoordinator
 
