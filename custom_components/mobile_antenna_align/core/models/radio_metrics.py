@@ -14,7 +14,7 @@ class RadioMetrics:
     manufacturer: str | None = None
     model: str | None = None
     provider: str | None = None
-
+    friendly_name: str | None = None
     serial_number: str | None = None
     firmware: str | None = None
 

@@ -81,9 +81,9 @@ SENSORS: tuple[Fritz5GSensorDescription, ...] = (
         native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     ),
     Fritz5GSensorDescription(
-        key="pci",
+        key="lte_pci",
         name="PCI",
-        value_key="pci",
+        value_key="lte_pci",
     ),
     Fritz5GSensorDescription(
         key="distance",
@@ -143,14 +143,14 @@ class Fritz5GSensor(
             identifiers={
                 (
                     DOMAIN,
-                    coordinator.data.get("serial_number", "unknown"),
+                    coordinator.data.serial_number or "unknown",
                 )
     },
     manufacturer=MANUFACTURER,
-    model=coordinator.data.get("model", DEFAULT_MODEL),
-    name=coordinator.data.get("friendly_name", DEFAULT_MODEL),
-    serial_number=coordinator.data.get("serial_number"),
-    sw_version=coordinator.data.get("firmware"),
+    model=coordinator.data.model or DEFAULT_MODEL,
+    name=coordinator.data.friendly_name or DEFAULT_MODEL,
+    serial_number=coordinator.data.serial_number,
+    sw_version=coordinator.data.firmware,
 )
         
 
@@ -158,8 +158,10 @@ class Fritz5GSensor(
     def native_value(self):
         """Return sensor value."""
 
-        return self.coordinator.data.get(
-            self.entity_description.value_key
+        return getattr(
+            self.coordinator.data,
+            self.entity_description.value_key,
+            None,
         )
         
    

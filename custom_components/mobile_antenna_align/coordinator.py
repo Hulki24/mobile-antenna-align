@@ -14,11 +14,12 @@ from homeassistant.helpers.update_coordinator import (
 
 from .api import Fritz5GApi
 from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
+from .core.models import RadioMetrics
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class Fritz5GCoordinator(DataUpdateCoordinator[dict]):
+class Fritz5GCoordinator(DataUpdateCoordinator[RadioMetrics]):
     """Coordinator for FRITZ!Box Mobile."""
 
     def __init__(
@@ -45,7 +46,7 @@ class Fritz5GCoordinator(DataUpdateCoordinator[dict]):
             ),
         )
 
-    async def _async_update_data(self) -> dict:
+    async def _async_update_data(self) -> RadioMetrics:
         """Update data."""
 
         try:

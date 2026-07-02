@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 
 from fritzconnection import FritzConnection
 
+from .core.models import RadioMetrics
 
 class Fritz5GApi:
     """FRITZ!Box Mobile API."""
@@ -42,9 +43,12 @@ class Fritz5GApi:
 
         info = self.get_info()
 
-        data: dict = {
-            "technology": info.get("NewCurrentAccessTechnology"),
-        }
+        data = RadioMetrics(
+            technology=info.get("NewCurrentAccessTechnology"),
+            manufacturer="AVM",
+            model="FRITZ!Box",
+            friendly_name="FRITZ!Box",
+        )
 
         signal = info.get("NewSignalRSRP0", "")
 
@@ -54,7 +58,7 @@ class Fritz5GApi:
         )
 
         if match:
-            data["lte_rsrp"] = int(match.group(1))
+            data.lte_rsrp = int(match.group(1))
 
         xml = info.get("NewCellList", "")
 
@@ -78,25 +82,25 @@ class Fritz5GApi:
                 pci = cell.findtext("PhysicalId")
                 distance = cell.findtext("Distance")
 
-                data["provider"] = cell.findtext("Provider")
-                data["lte_cell_id"] = cell.findtext("Cellid")
-                data["serial_number"] = info.get("NewSerialNumber")
-                data["firmware"] = info.get("NewSoftwareVersion")
+                data.provider = cell.findtext("Provider")
+                data.lte_cell_id = cell.findtext("Cellid")
+                data.serial_number = info.get("NewSerialNumber")
+                data.firmware = info.get("NewSoftwareVersion")
 
                 if rsrp:
-                    data["lte_rsrp"] = int(rsrp)
+                    data.lte_rsrp = int(rsrp)
 
                 if rsrq:
-                    data["lte_rsrq"] = int(rsrq)
+                    data.lte_rsrq = int(rsrq)
 
                 if rssi:
-                    data["lte_rssi"] = int(rssi)
+                    data.lte_rssi = int(rssi)
 
                 if pci:
-                    data["pci"] = int(pci)
+                    data.lte_pci = int(pci)
 
                 if distance:
-                    data["distance"] = int(distance)
+                    data.distance = int(distance)
 
             elif cell_type == "nr5g":
 
@@ -104,15 +108,15 @@ class Fritz5GApi:
                 rsrq = cell.findtext("Rsrq")
                 rssi = cell.findtext("Rssi")
 
-                data["nr_cell_id"] = cell.findtext("Cellid")
+                data.nr_cell_id = cell.findtext("Cellid")
 
                 if rsrp:
-                    data["nr_rsrp"] = int(rsrp)
+                    data.nr_rsrp = int(rsrp)
 
                 if rsrq:
-                    data["nr_rsrq"] = int(rsrq)
+                    data.nr_rsrq = int(rsrq)
 
                 if rssi:
-                    data["nr_rssi"] = int(rssi)
+                    data.nr_rssi = int(rssi)
 
         return data
