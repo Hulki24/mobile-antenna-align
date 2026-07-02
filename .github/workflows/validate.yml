@@ -11,6 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: home-assistant/actions/hassfest@master
+      - name: Run hassfest
+        uses: home-assistant/actions/hassfest@master
 
-      - uses: home-assistant/actions/ruff@master
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run Ruff
+        run: |
+          ruff check .
+
+      - name: Compile integration
+        run: |
+          python -m compileall custom_components/mobile_antenna_align
